@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: app/v1
+metadata:
+  name: docker-demo-service
+spec:
+ replicas: 2
+ selector:
+  matchLabels:
+   app: docker-demo-service
+  template:
+    metadata:
+      labels:
+        app: docker-demo-service
+    spec:
+      containers:
+      - name: docker-demo-service
+        image: docker-demo-0.0.1
+        ports:
+        - containerPort: 80
+kind: Service
+apiVersion: v1
+metadata:
+  name: docker-demo-service
+  labels:
+    app: docker-demo-service
+spec:
+  selector:
+    app: docker-demo-service
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: docker-demo-service
+spec:
+  rules:
+  - host: docker-demo-service.ksd.ibm.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fund-service
+          servicePort: 80
+    
+
+            
+               
